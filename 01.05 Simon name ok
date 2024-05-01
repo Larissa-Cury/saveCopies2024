@@ -1,0 +1,1133 @@
+// 👉 Remove command prefix
+PennController.ResetPrefix(null);
+
+// 👉 Remove progress bar: 
+
+var showProgressBar = false; //hide progress bar2
+
+// 👉 Sequence: 
+
+Sequence(
+ //"instructions-researcher-1", // INSERT CHILD NAME
+ 'full-screen',
+"instructions--child--1",  // INSTRUCTIONS FOR NEUTRAL
+   "countdownTrial",  // COUNTDOWN NEUTRAL PRACTICE
+   randomize("practice--neutral--block"), // PRACTICE NEUTRAL
+    "begin--trial",  // CHECK VARIABLE NEUTRAL
+    "countdownTrial", // PREPARE YOURSELF NEUTRAL
+   randomize("neutral--block"), // EXPERIMENTAL TRIAL NEUTRAL
+"instructions--child--2", // INSTRUCTIONS FOR CONFLICT
+ "countdownTrial--2",  // COUNTDOWN CONFLICT PRACTICE 
+ randomize("practice--conflict--block"), // CONFLICT PRACTICE
+ "begin--trial--2",  // CHECK VARIABLE CONFLICT
+ "countdownTrial", // PREPARE YOURSELF CONFLICT  22222222222222222222222
+   randomize("conflict--block"), // EXPERIMENTAL CONFLICT
+"instructions--child--3", // FINAL SCREEN CHILDREN
+    "sendResults", 
+    "final-screen-trial"  // WAIT FOREVER.
+);
+
+
+// 👉 Create header:
+
+Header(
+    // Declare a global Var element "ID" in which we will store the participant's ID
+    newVar("ID").global()   
+    )
+.log( "id" , getVar("ID") ); // Add the ID to all trials' results lines
+
+
+// Create global vars to test 👉
+
+let centerWelcomeMsgCanva = 210; // Adjusted to center horizontally
+let centerFormCanva = 160; // Adjusted to center horizontally
+let centerTypeIdMsgCanva = 135; // Adjusted to center horizontally
+let centerBtnCanva = 290; // Adjusted to center horizontally 300
+let centerBtnErrorMsg = 70; // Adjusted to center horizontally
+
+// 👉 open fullscreen: 
+
+newTrial('full-screen', 
+newButton('goFull', "<b style= 'color:red'>Clique aqui para começar! 🚀</b>")
+    .css({
+    "position": "fixed", // Make sure the button stays fixed on the screen
+    "top": "50%", // 50% of the viewport height
+    "left": "50%", // 50% of the viewport width
+    "transform": "translate(-50%, -50%)", // Horizontally and vertically center the button
+    "background": "linear-gradient(to top left, #0099CC, #66CCFF)",
+    "border-radius": "8px",
+    "box-shadow": "rgba(151, 65, 252, 0.2) 0 15px 30px -5px",
+    "box-sizing": "border-box",
+    "color": "#FFFFFF",
+    "display": "flex",
+    "font-family": "Phantomsans, sans-serif",
+    "font-size": "40px",
+    "justify-content": "center",
+    "line-height": "1em",
+    "max-width": "100%",
+    "min-width": "140px",
+    "padding": "19px 24px",
+    "text-decoration": "none",
+    "user-select": "none",
+    "-webkit-user-select": "none",
+    "touch-action": "manipulation",
+    "white-space": "nowrap",
+    "cursor": "pointer",
+    "width": "20em",
+    "border": "8px solid #FCFFDC"
+  })
+.print()
+.wait()
+,
+fullscreen()
+);
+
+// INSTRUCTIONS CHILD TRIAL 1 👇
+
+newTrial('instructions--child--1',
+defaultImage
+  .css({
+  "display": "block",
+  "position": "fixed",
+  "top": "50vh", // 50% of the viewport height
+  "left": '50%', // Use 50% for horizontal centering and 15% and 85% left/right
+  "transform": "translate(-50%, -50%)",
+  "border-radius": "50%",
+  "width": "25em", // Replace with the desired width of the image in em units
+  "height": "25em", // Replace with the desired height of the image in em units
+  "z-index": "9999", // To make sure the image is on top of other elements
+}).print().center()
+,
+defaultText.center().print()
+.cssContainer({
+          'margin-top': '25vh', // Vertical centering
+          'margin-left': '50vh', // Horizontal centering
+          'transform': 'translate(-50%, -50%)', // Correct the centering
+        //  'margin-top': '3em',
+          'text-align': 'center',
+          "justify-content": 'center',
+          "align-items": 'center' ,
+          'font-size': '35px',
+          "font-family": "Comic Sans MS",
+          "white-space": "nowrap"})
+,
+defaultButton
+   .css({
+    "align-items": "center",
+    "background": "linear-gradient(to top left, #0099CC, #66CCFF)",
+//    "border": "0",
+    "border-radius": "8px",
+    "box-shadow": "rgba(151, 65, 252, 0.2) 0 15px 30px -5px",
+    "box-sizing": "border-box",
+    "color": "#FFFFFF",
+    "display": "flex",
+    "font-family": "Phantomsans, sans-serif",
+    "font-size": "30px",
+    "justify-content": "center",
+    "line-height": "1em",
+    "max-width": "100%",
+    "min-width": "140px",
+    "padding": "19px 24px",
+    "text-decoration": "none",
+    "user-select": "none",
+    "-webkit-user-select": "none",
+    "touch-action": "manipulation",
+    "white-space": "nowrap",
+    "cursor": "pointer",
+    'width': '20em',
+    "border": "8px solid #FCFFDC"
+  })
+,
+newHtml("animated-rocket", "<div></div>")
+    .css({
+      "width": "50em",  // Adjust the width
+      "height": "50em", // Adjust the height
+      "background-image": "url('rocketUp.png')",
+      "background-size": "contain",
+      "background-repeat": "no-repeat", // Prevent image repetition
+      "position": "relative",
+      "animation": "example 2.5s infinite alternate"
+    })
+    .center()
+    .print(),
+
+  newVar("animationCSS", `
+    @keyframes example {
+      0%   { background-position: center bottom; }
+      50%  { background-position: center 200px; }
+      100% { background-position: center bottom; }
+    }
+  `)
+  .global(),
+
+  getHtml("animated-rocket").css("animation-name", "example"),
+
+  newFunction("loadAnimationCSS", ()=>{
+    const animationStyle = document.createElement("style");
+    animationStyle.type = "text/css";
+    animationStyle.innerHTML = getVar("animationCSS").value;
+    document.head.appendChild(animationStyle);
+  })
+  .call(),
+
+  getFunction("loadAnimationCSS").call()
+,
+getHtml("animated-rocket")
+  .css({
+  "display": "block",
+  "position": "fixed",
+  "top": "50vh", // 50% of the viewport height
+  "left": '85%', // Use 50% for horizontal centering and 15% and 85% left/right
+  "transform": "translate(-50%, -50%)",
+  "border-radius": "50%",
+  "width": "45em", // Replace with the desired width of the image in em units
+  "height": "45em", // Replace with the desired height of the image in em units
+  "z-index": "9999", // To make sure the image is on top of other elements
+})
+,
+    newText("my-name-msg", "Qual é seu nome?")
+    .cssContainer({
+    "font-size": "60px", 
+    'color':'white',
+    //'background-color': 'yellow',
+    "background-image": "linear-gradient(to top left, #0099CC, #66CCFF)",
+     "border-radius": "25px"})
+, 
+newAudio("HiandQuestion", "nome.mp3").play().wait('first')
+,
+newVar("fantasy--name").global()
+,
+  newTextInput("fantasyNameInput", "")
+  .center()
+    .css({
+            "margin":"1em",  // Add a em margin around this element
+            'margin-top': '4.5vh',
+            "height":"1.5em",
+            'width': '10em',
+          //  "width": '500px',
+          "border": "8px solid yellow", 
+         //   "border":"#FFFCF1",
+            "border-radius": "4px",
+            "font-size": '55px',
+            "background-color": "#E0F7FA"
+        })
+  //   .once()
+    .print()
+,
+getTextInput("fantasyNameInput").center().print()
+,
+newButton("submit-fantasy-name-btn", 'COMEÇAR 🚀')
+    .center().print()
+    // Only validate a click on Start when inputID has been filled
+        .wait( getTextInput("fantasyNameInput").testNot.text("")
+        .success(newAudio('clickAudio', 'ship.mp3').play().wait('first'))
+        .failure( 
+            newAudio('nomeFailAud', 'nomeFail.mp3').play().wait('first')
+         ))
+,
+getVar("fantasy--name").set(getTextInput("fantasyNameInput"))
+,
+// Store the text from inputID into the Var element
+    getVar("ID").set( getTextInput("fantasyNameInput") )
+,   
+getText('my-name-msg').remove() // Remove 'qual é seu nome?'
+,
+getButton("submit-fantasy-name-btn", 'COMEÇAR 👉').remove() // Remove 'COMEÇAR' btn'
+,
+getTextInput("fantasyNameInput").remove() // Remove Text Input 
+,
+newVar("hi--text").set(getVar("fantasy--name")).set(v=>`Olá, ${v} !😄`) // create new var to show text.
+,
+newText("welcome--fantasy--name--msg").text( getVar("hi--text") ) // show text.
+  .cssContainer({
+    "font-size": "60px", 
+    'color':'white',
+    "background-image": "linear-gradient(to top left, #0099CC, #66CCFF)",
+    "border-radius": "25px"})
+,
+newAudio("sparkle", "sparkle.mp3").play().wait("first")  // add sparkle sound when click 
+,
+newTimer("waitName", 1000).start().wait()
+,
+getText('welcome--fantasy--name--msg').remove() // remove child's name text
+,
+getHtml('animated-rocket').remove() // remove animated rocket 
+,
+newImage('foto1', 'foto1.png')
+.css({
+                        "width": "40em", // Replace with the desired width of the image in em units
+                        "height": "40em", // Replace with the desired height of the image in em units 
+                        "border-radius": "50%",
+                        "border": "8px solid orange"
+                         })
+,
+newAudio('missao', 'missao2.mp3').play().wait('first') // Em uma missão espacial...
+, 
+newAudio('left', 'esquerda2.mp3').play().wait("first") // a nave vai para a esquerda... 
+,
+getAudio('sparkle').play().wait('first')
+,
+newImage('leftImgEx', 'left.png') // display left png
+.css({
+                        "width": "40em", // Replace with the desired width of the image in em units
+                        "height": "40em", // Replace with the desired height of the image in em units 
+                        "border-radius": "50%",
+                        "border": "8px solid orange"
+                         })
+,
+newTimer('waitExampleImg', 2000).start().wait()
+,
+getImage('leftImgEx').remove()  // remove left png
+,
+newAudio('right', 'direita2.mp3').play().wait("first") // outras vezes, a nave vai para a direita...
+,
+getAudio('sparkle').play().wait('first') 
+,
+newImage('rightImgEx', 'right.png') // display left png
+.css({
+                        "width": "40em", // Replace with the desired width of the image in em units
+                        "height": "40em", // Replace with the desired height of the image in em units 
+                        "border-radius": "50%",
+                        "border": "8px solid orange"
+                         })
+,
+getTimer('waitExampleImg', 2000).start().wait()  // wait for right png
+,
+getImage('rightImgEx').remove() // remove right png 
+,
+newAudio('helpAud', 'ajuda.mp3').play().wait('first') // nesses momentos, ela precisa de sua ajuda...
+,
+newAudio('apontarEsq', 'apontarEsquerda.mp3').play().wait('first')
+,
+getAudio('sparkle').play().wait('first')
+,
+getImage('foto1').remove() // remove girl
+,
+getImage('leftImgEx') // display left png
+.css({
+                        "width": "40em", // Replace with the desired width of the image in em units
+                        "height": "40em", // Replace with the desired height of the image in em units 
+                        "border-radius": "50%",
+                        "border": "8px solid orange"
+                         }).print().center()
+,
+newAudio('apertarVerde', 'verde.mp3').play().wait('first')
+,
+getImage('leftImgEx').remove()
+,
+newImage('greenKey', 'greenKey.png')
+                         .css({
+                        "width": "50em", // Replace with the desired width of the image in em units
+                        "height": "50em", // Replace with the desired height of the image in em units 
+                         })
+,
+newAudio('keyPressAudio2', 'keyPress1.mp3').play().wait('first')
+,
+getTimer('waitExampleImg', 2000).start().wait()  
+,
+getImage('leftImgEx').remove() // remove left image
+, 
+getImage('greenKey').remove() // remove greenKey image
+,
+newAudio('apontarDir', 'apontarDireita.mp3').play().wait('first')
+,
+getAudio('sparkle').play().wait('first')
+,
+getImage('rightImgEx') // display right png
+.css({
+                        "width": "40em", // Replace with the desired width of the image in em units
+                        "height": "40em", // Replace with the desired height of the image in em units 
+                        "border-radius": "50%",
+                        "border": "8px solid orange"
+                         }).print().center()
+,
+newAudio('apertarAzul', 'azul.mp3').play().wait('first')  // play apertar azul audio
+,
+getImage('rightImgEx').remove() // remove right pic
+,
+newImage('blueKey', 'blueKey.png')
+                         .css({
+                        "width": "50em", // Replace with the desired width of the image in em units
+                        "height": "50em", // Replace with the desired height of the image in em units 
+                         })
+,
+getAudio('keyPressAudio2').play().wait('first') 
+,
+getTimer('waitExampleImg', 2000).start().wait()  // wait right keyboard pic
+,
+getImage('blueKey').remove() // remove blueKey pic
+,
+newAudio('sinal', 'sinal.mp3').play().wait('first') // Às vezes, Crystal encontra um sinal misterioso....
+,
+newImage('cross', 'cross.png')
+                         .css({
+                        "width": "40em", // Replace with the desired width of the image in em units
+                        "height": "40em", // Replace with the desired height of the image in em units 
+                        "border-radius": "50%",
+                        "border": "8px solid black"
+                         })
+,
+getAudio('sparkle').play().wait('first')
+,
+newTimer('waitCrossTimer', 2500).start().wait()  // wait sinal cross pic
+,
+getImage('cross').remove() // remove cross png
+,
+newAudio('espere', 'espere1.mp3').play().wait('first') // Quando isso acontecer, espere...
+,
+newImage('crossRed', 'crossRed.png') // shhow red arrow image
+                         .css({
+                        "width": "40em", // Replace with the desired width of the image in em units
+                        "height": "40em", // Replace with the desired height of the image in em units 
+                        "border-radius": "50%",
+                        "border": "8px solid black"
+                         })
+,
+getAudio('sparkle').play().wait('first')
+,
+newAudio('espere2', 'espere2.mp3').play().wait('first') // e espere...
+,
+getTimer('waitCrossTimer').start().wait()  // wait sinal red cross  pic
+,
+getImage('crossRed').remove() // remove cross red pic
+,
+newAudio('letsPractice', 'treinar.mp3').play().wait('first')
+,
+newImage('handsOnKey', 'handsOnKey.png')
+                         .css({
+                        "width": "50em", // Replace with the desired width of the image in em units
+                        "height": "50em", // Replace with the desired height of the image in em units 
+                         })
+,
+newVar("errorCount",0).global() // create GLOBAL VAR to store errors during practice trials (both)
+,
+newVar("storeErrors",0).global() // create GLOBAL VAR to store errors and count 
+,
+newTimer('transitionTimer', 3000).start().wait()
+);
+
+// INSTRUCTIONS CHILD TRIAL 2 👇
+
+newTrial('instructions--child--2',
+newFunction(() => {$("body").css("background-image", "url(back_1.jpg)");}).call()
+,
+newAudio('shipAud', 'ship.mp3').play().wait('first')  // play ship audio (5s)
+,
+defaultImage
+  .css({
+  "display": "block",
+  "position": "fixed",
+  "top": "50vh", // 50% of the viewport height
+  "left": '50%', // Use 50% for horizontal centering and 15% and 85% left/right
+  "transform": "translate(-50%, -50%)",
+  "border-radius": "50%",
+  "width": "25em", // Replace with the desired width of the image in em units
+  "height": "25em", // Replace with the desired height of the image in em units
+  "z-index": "9999", // To make sure the image is on top of other elements
+}).print().center()
+,
+defaultText.center().print()
+.cssContainer({
+          'margin-top': '25vh', // Vertical centering
+          'margin-left': '50vh', // Horizontal centering
+          'transform': 'translate(-50%, -50%)', // Correct the centering
+        //  'margin-top': '3em',
+          'text-align': 'center',
+          "justify-content": 'center',
+          "align-items": 'center' ,
+          'font-size': '35px',
+          "font-family": "Comic Sans MS",
+          "white-space": "nowrap"})
+,
+defaultButton
+    .css({
+      "align-items": "center",
+      "background-image": "linear-gradient(to top left, #39b385, #9be15d)",
+      border: "0",
+      "border-radius": "8px",
+      "box-shadow": "rgba(151, 65, 252, 0.2) 0 15px 30px -5px",
+      "box-sizing": "border-box",
+      color: "#FFFFFF",
+      display: "flex",
+      "font-family": " Phantomsans, sans-serif",
+      "font-size": "30px",
+      "justify-content": "center",
+      "line-height": "1em",
+      "max-width": "100%",
+      "min-width": "140px",
+      padding: "19px 24px",
+      "text-decoration": "none",
+      "user-select": "none",
+      "-webkit-user-select": " none",
+      "touch-action": "manipulation",
+      "white-space": "nowrap",
+      cursor: "pointer",
+    })
+,
+newHtml("animated-rocket", "<div></div>")
+    .css({
+      "width": "50em",  // Adjust the width
+      "height": "50em", // Adjust the height
+      "background-image": "url('rocketUp.png')",
+      "background-size": "contain",
+      "background-repeat": "no-repeat", // Prevent image repetition
+      "position": "relative",
+      "animation": "example 2.5s infinite alternate"
+    })
+    .center()
+    .print(),
+
+  newVar("animationCSS", `
+    @keyframes example {
+      0%   { background-position: center bottom; }
+      50%  { background-position: center 200px; }
+      100% { background-position: center bottom; }
+    }
+  `)
+  .global(),
+
+  getHtml("animated-rocket").css("animation-name", "example"),
+
+  newFunction("loadAnimationCSS", ()=>{
+    const animationStyle = document.createElement("style");
+    animationStyle.type = "text/css";
+    animationStyle.innerHTML = getVar("animationCSS").value;
+    document.head.appendChild(animationStyle);
+  })
+  .call(),
+
+  getFunction("loadAnimationCSS").call()
+,
+getHtml("animated-rocket")
+  .css({
+  "display": "block",
+  "position": "fixed",
+  "top": "50vh", // 50% of the viewport height
+  "left": '85%', // Use 50% for horizontal centering and 15% and 85% left/right
+  "transform": "translate(-50%, -50%)",
+  "border-radius": "50%",
+  "width": "45em", // Replace with the desired width of the image in em units
+  "height": "45em", // Replace with the desired height of the image in em units
+  "z-index": "9999", // To make sure the image is on top of other elements
+})
+,
+newVar("hi--text2").set(getVar("fantasy--name")).set(v=>`Muito bem, ${v} !😄`) // create new var to show text.
+,
+newText("congrats--fantasy--name--msg").text( getVar("hi--text2") ) // show text.
+  .cssContainer({
+    "font-size": "60px", 
+    'color':'white',
+    "background-image": "linear-gradient(to top left, #0099CC, #66CCFF)",
+    "border-radius": "25px"})
+,
+newAudio('positive-feedback', 'arrasou.mp3').play().wait('first') // você é muito bom, arrasou!
+,
+newTimer('waitExampleImg--2', 2000).start().wait()  // wait
+,
+getText('congrats--fantasy--name--msg').remove() // remove congrats, text!
+,
+newImage('foto1', 'foto1.png')
+.css({
+                        "width": "40em", // Replace with the desired width of the image in em units
+                        "height": "40em", // Replace with the desired height of the image in em units 
+                        "border-radius": "50%",
+                        "border": "8px solid orange"
+                         }).print()
+,
+newAudio('phase','fase.mp3').play().wait('first') // agora é a última fase!
+,
+getHtml('animated-rocket').remove() // remove html
+,
+newAudio('planetPalavras', 'letras2.mp3').play().wait('first') // Agora, Cristal precisa ainda mais da sua ajuda para chegar ao Planeta das Palavras
+, 
+newImage('planetPalavrasImg', 'planet1.png') // show planetPalavrasImg 
+.css({
+                        "width": "40em", // Replace with the desired width of the image in em units
+                        "height": "40em", // Replace with the desired height of the image in em units 
+                        "border-radius": "50%",
+                        "border": "8px solid black"
+                         }).center().print()
+,
+newAudio('sparkle--2', 'sparkle.mp3').play().wait('first')
+,
+getTimer("waitExampleImg--2", + 1000).start().wait()
+,
+getImage('foto1').remove()
+,
+getImage('planetPalavrasImg').remove()
+, 
+newImage('sirenImg', 'siren.png') // show siren img
+.css({
+                        "width": "40em", // Replace with the desired width of the image in em units
+                        "height": "40em", // Replace with the desired height of the image in em units 
+                        "border-radius": "50%",
+                      //  "border": "8px solid yellow"
+                         }).center().print()
+,
+newAudio('beCarefulAud', 'cuidado2.mp3').play().wait() // Não importa em que lugar do espaço a nave esteja ...
+,
+getImage('sirenImg').remove() // remove siren
+,
+newAudio('letsPractice--2', 'treinar.mp3').play().wait('first')
+,
+newImage('handsOnKey--2', 'handsOnKey.png')
+                         .css({
+                        "width": "50em", // Replace with the desired width of the image in em units
+                        "height": "50em", // Replace with the desired height of the image in em units 
+                         }).center().print()
+,
+newTimer('transitionTimer--2', 3000).start().wait()
+);
+
+// INSTRUCTIONS CHILD TRIAL 3 👇 // FINAL ENDGAME
+
+newTrial('instructions--child--3',
+newFunction(() => {$("body").css("background-image", "url(back_1.jpg)");}).call()
+,
+defaultImage
+  .css({
+  "display": "block",
+  "position": "fixed",
+  "top": "50vh", // 50% of the viewport height
+  "left": '50%', // Use 50% for horizontal centering and 15% and 85% left/right
+  "transform": "translate(-50%, -50%)",
+  "border-radius": "50%",
+  "width": "25em", // Replace with the desired width of the image in em units
+  "height": "25em", // Replace with the desired height of the image in em units
+  "z-index": "9999", // To make sure the image is on top of other elements
+}).print().center()
+,
+defaultText.center().print()
+.cssContainer({
+          'margin-top': '25vh', // Vertical centering
+          'margin-left': '50vh', // Horizontal centering
+          'transform': 'translate(-50%, -50%)', // Correct the centering
+        //  'margin-top': '3em',
+          'text-align': 'center',
+          "justify-content": 'center',
+          "align-items": 'center' ,
+          'font-size': '35px',
+          "font-family": "Comic Sans MS",
+          "white-space": "nowrap"})
+,
+defaultButton
+    .css({
+      "align-items": "center",
+      "background-image": "linear-gradient(to top left, #39b385, #9be15d)",
+      border: "0",
+      "border-radius": "8px",
+      "box-shadow": "rgba(151, 65, 252, 0.2) 0 15px 30px -5px",
+      "box-sizing": "border-box",
+      color: "#FFFFFF",
+      display: "flex",
+      "font-family": " Phantomsans, sans-serif",
+      "font-size": "30px",
+      "justify-content": "center",
+      "line-height": "1em",
+      "max-width": "100%",
+      "min-width": "140px",
+      padding: "19px 24px",
+      "text-decoration": "none",
+      "user-select": "none",
+      "-webkit-user-select": " none",
+      "touch-action": "manipulation",
+      "white-space": "nowrap",
+      cursor: "pointer",
+    })
+,
+newHtml("animated-rocket", "<div></div>")
+    .css({
+      "width": "50em",  // Adjust the width
+      "height": "50em", // Adjust the height
+      "background-image": "url('rocketUp.png')",
+      "background-size": "contain",
+      "background-repeat": "no-repeat", // Prevent image repetition
+      "position": "relative",
+      "animation": "example 2.5s infinite alternate"
+    })
+    .center()
+    .print(),
+
+  newVar("animationCSS", `
+    @keyframes example {
+      0%   { background-position: center bottom; }
+      50%  { background-position: center 200px; }
+      100% { background-position: center bottom; }
+    }
+  `)
+  .global(),
+
+  getHtml("animated-rocket").css("animation-name", "example"),
+
+  newFunction("loadAnimationCSS", ()=>{
+    const animationStyle = document.createElement("style");
+    animationStyle.type = "text/css";
+    animationStyle.innerHTML = getVar("animationCSS").value;
+    document.head.appendChild(animationStyle);
+  })
+  .call(),
+
+  getFunction("loadAnimationCSS").call()
+,
+getHtml("animated-rocket")
+  .css({
+  "display": "block",
+  "position": "fixed",
+  "top": "50vh", // 50% of the viewport height
+  "left": '85%', // Use 50% for horizontal centering and 15% and 85% left/right
+  "transform": "translate(-50%, -50%)",
+  "border-radius": "50%",
+  "width": "45em", // Replace with the desired width of the image in em units
+  "height": "45em", // Replace with the desired height of the image in em units
+  "z-index": "9999", // To make sure the image is on top of other elements
+})
+,
+newAudio('shipAud', 'ship.mp3').play().wait('first')  // play ship audio (5s)
+,
+newImage('foto1', 'foto1.png')
+.css({
+                        "width": "40em", // Replace with the desired width of the image in em units
+                        "height": "40em", // Replace with the desired height of the image in em units 
+                        "border-radius": "50%",
+                        "border": "8px solid orange"
+                         }).print()
+,
+newAudio('conseguiu', 'planetaLetras.mp3').play().wait('first')
+,
+newImage('planetPalavrasCristalImg', 'planet2.png') // show planetPalavrasImg 
+.css({
+                        "width": "40em", // Replace with the desired width of the image in em units
+                        "height": "40em", // Replace with the desired height of the image in em units 
+                        "border-radius": "50%",
+                        "border": "8px solid black"
+                         }).center().print()
+,
+newAudio('winAud', 'win.mp3').play().wait('first')
+,
+newTimer("waitExampleImg--3", 2000).start().wait()
+,
+newAudio('soon', 'ate.mp3').play().wait('first')
+,
+getTimer('waitExampleImg--3').start().wait()
+);
+
+// COUNTDOWN TRIAL 👇
+
+newTrial("countdownTrial",
+newFunction(() => {$("body").css("background-image", "url(back_1.jpg)");}).call()
+,
+
+defaultText.center().print()
+    .cssContainer({
+      'position': 'fixed',  // Make the position fixed
+      'top': '50%',         // Vertical centering
+      'left': '50%',        // Horizontal centering
+      'transform': 'translate(-50%, -50%)', // Correct the centering
+      'text-align': 'center',
+      'justify-content': 'center',
+      'align-items': 'center',
+      'font-size': '150px',
+      "font-family": "Comic Sans MS",
+      "white-space": "nowrap",
+      "color": 'white',
+      "border-radius": "25%",
+     'text-shadow': '4px 4px lightblue'
+    })
+,
+getVar("errorCount").set(0) // always reset the errorCount before countdown
+,
+//newTimer('biggerTimer', 5000).start()
+newAudio('countdownAudio', 'cutCountdown.mp3').play()
+,
+    newVar("finishTime").set(v=>Date.now()+3000) // 5000ms = 5s
+    ,
+    newText("countDown", "3").print().center()
+   ,
+    // This Timer element will execute a callback after 1s
+    newTimer("updateCountdown",1000).callback( 
+        newVar("difference")
+            .set(getVar("finishTime")).set(v=>v-Date.now())
+            .test.is(v=>v>0) // Positive value means current time still below finish time
+            .success(
+                // Transform the Var element into an appropriately formatted string
+                getVar("difference")
+                    .set(v => Math.round(v / 1000)) // display time in s (ms/1000)
+                ,
+                getText("countDown").text(getVar("difference")) // update the text variable
+                ,
+                // Relaunch the timer to update again in 1s
+                getTimer("updateCountdown").start()
+            )
+    ).start() // Don't forget to start the timer the initially
+  ,
+   // getTimer('biggerTimer').wait()
+   getAudio('countdownAudio').wait()
+);
+
+// 👉  MAKE PRACTICE TRIAL FUNCTION:
+
+makePracticeTrial = label => row => newTrial( label , 
+  defaultText.center().print()
+  .cssContainer({
+    'position': 'fixed',
+    'top': '50%',
+    'left': '50%',
+    'transform': 'translate(-50%, -50%)',
+    'text-align': 'center',
+    'font-size': '6em',   // 60px in em units
+    "white-space": "nowrap",
+  })
+  ,
+  // change background-color: 
+//   newFunction( ()=>$("body").css("background-color","yellow") ).call()
+  newFunction(() => {$("body").css("background-image", "none");}).call()
+//  ,
+ // newVar("errorCount",0).global()  // COUNT ERRORS
+  ,
+  newText('fixationCross', '&#x2b;').center().print().cssContainer({'font-size': '200px'})
+  ,
+  newTimer('waitFixation', row.fixationTime).start().wait()
+  ,
+  getText('fixationCross').remove()
+  ,
+  newTimer("timeout",5000).start() // User has 5s to answer; otherwise => timeout
+  ,
+  newVar("position",row.position).set() 
+  ,
+  newImage('stimuli', row.direction).print()  // Print arrow left or right
+  .css({
+  "display": "block",
+  "position": "fixed",
+  "top": "50vh", // 50% of the viewport height
+  "left": getVar("position").value, // Use 50% for horizontal centering and 15% and 85% left/right
+  "transform": "translate(-50%, -50%)",
+  "border-radius": "50%",
+  "width": "25em", // Replace with the desired width of the image in em units
+  "height": "25em", // Replace with the desired height of the image in em units
+  "z-index": "9999", // To make sure the image is on top of other elements
+  "border": "8px solid orange"
+})
+//,
+//newVar("RTPractice").global().set( v => Date.now() ) // compute Reaction Time
+,
+newAudio('keyPressAudio', "keyPress1.mp3")
+,
+newKey("answerKey","SK")
+       // .log("all")
+        .callback( getTimer("timeout").stop(), // the key stops the time
+                   getAudio('keyPressAudio').play()) 
+,
+getTimer("timeout").wait() // wait for the timeout to finish (no keypress, the time isn't stoped) ???
+//,
+//getVar("RTPractice").set( v => Date.now() - v )  // set Reaction Time value BEFORE the msg for the timeout
+,
+getImage('stimuli').remove()
+,
+// Check for the correct key press or timeout
+getKey("answerKey")
+    .test.pressed(row.correctKey) // check keys
+    .success(
+        // Display "Correct" message and wait for positive feedback timer
+      //  newText("Correct ✅").center().print(),
+       newText("rightFeedBack", "😄").center().print(),
+        newTimer('wait-positive-feedback', 500).start().wait()
+    )
+    .failure(
+        // Check for timeout before displaying "Incorrect" message
+        getKey("answerKey").disable().test.pressed()
+        .failure(
+            // Display "Timeout" message and wait for feedback timer
+            getVar('errorCount').set(v=> v+1),
+            newText("Consegue ir mais rápido? ⏰").center().print(),
+            newTimer('wait-feedback', 500).start().wait()
+        )
+        .success(
+            // Display "Incorrect" message and wait for negative feedback timer
+            getVar('errorCount').set(v=> v+1),
+         //   newText("Incorrect ❌").center().print(),
+            newText("errorFeedBack","😄").center().print(),
+            newTimer('wait-neg-feedback', 500).start().wait()
+        )
+    )
+    
+ //   ,
+ //   newText("display").text( getVar("errorCount").print() )
+ //   ,
+ //   newTimer('checkVar', 500).start().wait()
+ // .log("item", row.item)
+//  .log("direction",row.direction)
+//  .log("correctKey", row.correctKey)
+//  .log( "ReactionTime" , getVar("RTPractice") ) //same name as the other RT, see if it will return an error.
+ );
+
+// Practice NEUTRAL TRIAL 👇
+
+Template( "simonStimuliPracticeNeutral.csv", makePracticeTrial("practice--neutral--block") );
+
+// Practice CONFLICT TRIAL 👇
+
+Template( "simonStimuliPracticeConflict.csv", makePracticeTrial("practice--conflict--block") );
+
+// SHALL WE BEGIN - TRIAL ? 👇
+
+newTrial("begin--trial",
+
+// see if I can access the var of the other TRIAL
+
+// newText("display-test").text( getVar("errorCount") ).print()
+
+getVar("errorCount").test.is(v => v >= 2).success( // test if errorCount is >= 2
+                     //   newText(" 2 errors !").center().print()  // PRINT ERROR ON SCREEN
+                     //   ,
+                        // getVar("errorCount").set(0) // reset the errorCount
+                        // ,
+                        newAudio('practiceAgainAud', 'practiceAgainAudio.mp3').play().wait('first')
+                        ,
+                        newFunction(() => {$("body").css("background-image", "none");}).call()
+                      //  ,
+                    //    exitFullscreen()
+                        ,
+                        getVar('storeErrors').set(v=> v+1)
+                        ,
+                        jump("countdownTrial") // jump to instructions if errorCount >= 2
+                    )
+                    .failure( 
+                        //newText(" NO 2 !").center().print(), // PRINT NO TWO ERRORS ON SCREEN
+                     //    , 
+                        newAudio('getReady', 'prepareSE.mp3').play().wait('first') // play audio and move on 
+                    
+            )
+.log( "errorCount" , getVar("storeErrors") )
+);
+
+// 👉 Create function to all trials:
+
+makeTrial = label => row => newTrial( label , 
+newFunction(() => {$("body").css("background-image", "none");}).call() // restore background
+,
+  defaultText.center().print()
+  .cssContainer({
+    'position': 'fixed',
+    'top': '50%',
+    'left': '50%',
+    'transform': 'translate(-50%, -50%)',
+    'text-align': 'center',
+    'font-size': '6em',   // 60px in em units
+    "white-space": "nowrap",
+  })
+  ,
+  newText('fixationCross', '&#x2b;').center().print().cssContainer({'font-size': '200px'})
+  ,
+  newTimer('waitFixation', row.fixationTime).start().wait()
+  ,
+  getText('fixationCross').remove()
+  ,
+  newTimer("timeout",5000).start() // User has 5s to answer; otherwise => timeout
+  ,
+  newVar("position",row.position).set() 
+  ,
+  newImage('stimuli', row.direction).print()  // Print arrow left or right
+  .css({
+  "display": "block",
+  "position": "fixed",
+  "top": "50vh", // 50% of the viewport height
+  "left": getVar("position").value, // Use 50% for horizontal centering and 15% and 85% left/right
+  "transform": "translate(-50%, -50%)",
+  "border-radius": "50%",
+  "width": "25em", // Replace with the desired width of the image in em units
+  "height": "25em", // Replace with the desired height of the image in em units
+  "z-index": "9999", // To make sure the image is on top of other elements
+  "border": "8px solid orange"
+})
+,
+newVar("RT").global().set( v => Date.now() ) // compute Reaction Time
+,
+newAudio('keyPressAudio', "keyPress1.mp3")
+,
+newKey("answerKey","SK")
+        .log("all")
+        .callback( getTimer("timeout").stop() ) // the key stops the time
+,
+getTimer("timeout").wait() // wait for the timeout to finish (no keypress, the time isn't stoped) ???
+,
+getVar("RT").set( v => Date.now() - v )  // set Reaction Time value BEFORE the msg for the timeout
+,
+getImage('stimuli').remove()
+,
+getKey("answerKey").disable().test.pressed().failure(
+             newText("Incorrect", "Consegue ir mais rápido? ⏰").center().print(),
+             newTimer('wait-feedback',500).start().wait()
+         )
+         //.success(getAudio('keyPressAudio').play().wait('first'))
+         
+)
+  .log("item", row.item)
+  .log("direction",row.direction)
+  .log("block", row.block)
+  .log("correctKey", row.correctKey)
+  .log("condition", row.condition)
+  .log( "ReactionTime" , getVar("RT") 
+ );
+
+
+// NEUTRAL TRIAL: 👇
+
+Template( "simonStimuliNeutral.csv", makeTrial("neutral--block") );
+
+// CONFLICT TRIAL: 👇
+
+Template( "simonStimuliConflict.csv", makeTrial("conflict--block") );
+
+// 👉 Send results:
+
+SendResults("sendResults");
+
+// 👉 Final screen
+
+newTrial ("final-screen-trial" ,
+exitFullscreen()
+,
+defaultImage
+  .css({
+  "display": "block",
+  "position": "fixed",
+  "top": "50vh", // 50% of the viewport height
+  "left": '50%', // Use 50% for horizontal centering and 15% and 85% left/right
+  "transform": "translate(-50%, -50%)",
+  "border-radius": "50%",
+  "width": "25em", // Replace with the desired width of the image in em units
+  "height": "25em", // Replace with the desired height of the image in em units
+  "z-index": "9999", // To make sure the image is on top of other elements
+}).print().center()
+,
+defaultText.center().print()
+.cssContainer({
+          'margin-top': '15vh', // Vertical centering
+          'margin-left': '85vh', // Horizontal centering
+          'transform': 'translate(-50%, -50%)', // Correct the centering
+        //  'margin-top': '3em',
+          'text-align': 'center',
+          "justify-content": 'center',
+          "align-items": 'center' ,
+          'font-size': '35px',
+          "font-family": "Comic Sans MS",
+          'color':'white',
+          "white-space": "nowrap"})
+// defaultText.center()
+//     .print()
+//     .cssContainer({
+//           'margin-top': '1.5em',
+//           'text-align': 'center',
+//           "justify-content": 'center',
+//           "align-items": 'center' ,
+//           'font-size': '35px',
+//           "white-space": "nowrap",
+//   })
+,
+newText("final--msg", "<i style= 'color:red; background-color: yellow; border-radius: 5px;';>Espere</i> o professor agora ⏰!")
+     .center().print()
+    .cssContainer({
+          'font-size': '45px',
+          "white-space": "nowrap"  
+})
+,
+newImage('wait-ast', 'fogete3.JPG')
+      .css({
+                        "width": "15em", // Replace with the desired width of the image in em units
+                        "height": "15em", // Replace with the desired height of the image in em units 
+                        "border-radius": "50%",
+                        "border": "8px solid black",
+                        "left": '50%'
+                         }).center().print()
+, 
+newButton().wait() // // Stay on this page forever
+);
+ 
+// 👉 de bug off///
+
+ PennController.DebugOff();  
+ 
+ 
+///////////////////////////////////// REPEATING STUFF ////////////////////////
+
+// COUNTDOWN TRIAL 2👇
+
+newTrial("countdownTrial--2",
+newFunction(() => {$("body").css("background-image", "url(back_1.jpg)");}).call()
+,
+defaultText
+.cssContainer({
+      'position': 'fixed',  // Make the position fixed
+      'top': '50%',         // Vertical centering
+      'left': '50%',        // Horizontal centering
+      'transform': 'translate(-50%, -50%)', // Correct the centering
+      'text-align': 'center',
+      'justify-content': 'center',
+      'align-items': 'center',
+      'font-size': '150px',
+      "font-family": "Comic Sans MS",
+      "white-space": "nowrap",
+      "color": 'white',
+      "border-radius": "25%",
+     'text-shadow': '4px 4px lightblue'
+    }).print().center()
+,
+getVar("errorCount").set(0) // always reset the errorCount before countdown
+,
+//newTimer('biggerTimer', 5000).start()
+newAudio('countdownAudio', 'cutCountdown.mp3').play()
+,
+    newVar("finishTime").set(v=>Date.now()+3000) // 5000ms = 5s
+    ,
+    newText("countDown", "3").print().center()
+    ,
+    // This Timer element will execute a callback after 1s
+    newTimer("updateCountdown",1000).callback( 
+        newVar("difference")
+            .set(getVar("finishTime")).set(v=>v-Date.now())
+            .test.is(v=>v>0) // Positive value means current time still below finish time
+            .success(
+                // Transform the Var element into an appropriately formatted string
+                getVar("difference")
+                    .set(v => Math.round(v / 1000)) // display time in s (ms/1000)
+                ,
+                getText("countDown").text(getVar("difference")) // update the text variable
+                ,
+                // Relaunch the timer to update again in 1s
+                getTimer("updateCountdown").start()
+            )
+    ).start() // Don't forget to start the timer the initially
+,
+   // getTimer('biggerTimer').wait()
+   getAudio('countdownAudio').wait()
+);
+
+
+// SHALL WE BEGIN - TRIAL ? 👇
+
+newTrial("begin--trial--2",
+
+// see if I can access the var of the other TRIAL
+
+// newText("display-test").text( getVar("errorCount") ).print()
+
+getVar("errorCount").test.is(v => v >= 2).success( // test if errorCount is >= 2
+                     //   newText(" 2 errors !").center().print()  // PRINT ERROR ON SCREEN
+                     //   ,
+                        // getVar("errorCount").set(0) // reset the errorCount
+                        // ,
+                        newAudio('practiceAgainAud', 'practiceAgainAudio.mp3').play().wait('first')
+                        ,
+                        newFunction(() => {$("body").css("background-image", "none");}).call()
+                      //  ,
+                    //    exitFullscreen()
+                        ,
+                        jump("countdownTrial--2") // jump to instructions if errorCount >= 2
+                    )
+                    .failure( 
+                        //newText(" NO 2 !").center().print(), // PRINT NO TWO ERRORS ON SCREEN
+                     //    , 
+                        newAudio('getReady', 'prepareSE.mp3').play().wait('first') // play audio and move on 
+                    
+            )
+);
