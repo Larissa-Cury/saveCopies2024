@@ -1,0 +1,1544 @@
+
+// DELETED FILES:
+
+// Together.gif 
+// card1.gif
+// all item audios (1 to 16)
+// all Clean images (1 to 8)
+// csv: stimuliNew.csv
+// audios: beep, bell, click, win
+
+
+// 👉 Remove command prefix
+PennController.ResetPrefix(null);
+
+// 👉 Remove progress bar: 
+
+var showProgressBar = false; //hide progress bar2
+
+// 👉 Sequence:
+
+Sequence(
+    "full-screen", 
+    "instructions--child--1",
+    "countdownTrial", // 1...2..3..
+   ...[...Array(9)].map((v,i)=>("sequenceSTMp-"+parseInt(i+1))),  // practice for STM
+    "begin--trial",
+    "countdownTrial", // 1...2..3..
+    ...[...Array(9)].map((v,i)=>("sequenceSTM-"+parseInt(i+1))), // experiment STM
+    "instructions--child--2",
+   "countdownTrial2", // 1...2..3.. // ERASE ERROR COUNT FROM PREVIOUS PRACTICE - 2 TO COME BACK HERE
+    ...[...Array(9)].map((v,i)=>("sequenceWMp-"+parseInt(i+1))),  // practice for WM
+    "begin--trial2", // save for practice WM
+    "countdownTrial2", // 1...2..3.. // ERASE ERROR COUNT FROM PREVIOUS PRACTICE
+    ...[...Array(9)].map((v,i)=>("sequenceWM-"+parseInt(i+1))), // experiment WM
+    "instructions--child--3",
+    "sendResults",
+    "final-screen-trial"
+);
+
+
+// 👉 Create header:
+
+Header(
+    // Declare a global Var element "ID" in which we will store the participant's ID
+    newVar("ID").global()   )
+.log( "id" , getVar("ID") ); // Add the ID to all trials' results lines
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////// 👇 OPEN FULLSCREEN 👇 ////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+newTrial('full-screen', 
+newButton('goFull', "<b style= 'color:red'>Clique aqui para começar! 👩‍🚀👨‍🚀</b>")
+    .css({
+    "position": "fixed", // Make sure the button stays fixed on the screen
+    "top": "50%", // 50% of the viewport height
+    "left": "50%", // 50% of the viewport width
+    "transform": "translate(-50%, -50%)", // Horizontally and vertically center the button
+    "background": "linear-gradient(to top left, #0099CC, #66CCFF)",
+    "border-radius": "8px",
+    "box-shadow": "rgba(151, 65, 252, 0.2) 0 15px 30px -5px",
+    "box-sizing": "border-box",
+    "color": "#FFFFFF",
+    "display": "flex",
+    "font-family": "Phantomsans, sans-serif",
+    "font-size": "40px",
+    "justify-content": "center",
+    "line-height": "1em",
+    "max-width": "100%",
+    "min-width": "140px",
+    "padding": "19px 24px",
+    "text-decoration": "none",
+    "user-select": "none",
+    "-webkit-user-select": "none",
+    "touch-action": "manipulation",
+    "white-space": "nowrap",
+    "cursor": "pointer",
+    "width": "20em",
+    "border": "8px solid #FCFFDC"
+  })
+.print()
+.wait()
+//,
+// Store the text from inputID into the Var element
+  //  getVar("ID").set( getTextInput("name-ID") )
+
+,
+newVar("errorCount",0).global() // create GLOBAL VAR to store errors during practice trials (both)
+,
+newVar("countPracticeSTM", 0).global() // try to store the n of pratice trials for STM
+,
+newVar("countPracticeWM", 0).global() // try to store the n of pratice trials for WM
+,
+fullscreen()
+);
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////// 👇 INSTRUCTIONS 1 👇 ////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+newTrial('instructions--child--1',
+defaultImage
+  .css({
+  "display": "block",
+  "position": "fixed",
+  "top": "50vh", // 50% of the viewport height
+  "left": '50%', // Use 50% for horizontal centering and 15% and 85% left/right
+  "transform": "translate(-50%, -50%)",
+  "border-radius": "50%",
+  "width": "25em", // Replace with the desired width of the image in em units
+  "height": "25em", // Replace with the desired height of the image in em units
+  "z-index": "9999", // To make sure the image is on top of other elements
+}).print().center()
+,
+defaultText.center().print()
+.cssContainer({
+          'margin-top': '25vh', // Vertical centering
+          'margin-left': '50vh', // Horizontal centering
+          'transform': 'translate(-50%, -50%)', // Correct the centering
+        //  'margin-top': '3em',
+          'text-align': 'center',
+          "justify-content": 'center',
+          "align-items": 'center' ,
+          'font-size': '35px',
+          "font-family": "Comic Sans MS",
+          "white-space": "nowrap"})
+,
+defaultButton
+   .css({
+    "align-items": "center",
+    "background": "linear-gradient(to top left, #0099CC, #66CCFF)",
+//    "border": "0",
+    "border-radius": "8px",
+    "box-shadow": "rgba(151, 65, 252, 0.2) 0 15px 30px -5px",
+    "box-sizing": "border-box",
+    "color": "#FFFFFF",
+    "display": "flex",
+    "font-family": "Phantomsans, sans-serif",
+    "font-size": "30px",
+    "justify-content": "center",
+    "line-height": "1em",
+    "max-width": "100%",
+    "min-width": "140px",
+    "padding": "19px 24px",
+    "text-decoration": "none",
+    "user-select": "none",
+    "-webkit-user-select": "none",
+    "touch-action": "manipulation",
+    "white-space": "nowrap",
+    "cursor": "pointer",
+    'width': '20em',
+    "border": "8px solid #FCFFDC"
+  })
+,
+    newText("my-name-msg", "Qual é seu nome?")
+    .cssContainer({
+    "font-size": "60px", 
+    'color':'white',
+    //'background-color': 'yellow',
+    "background-image": "linear-gradient(to top left, #0099CC, #66CCFF)",
+     "border-radius": "25px"})
+, 
+newAudio("HiandQuestion", "nome.mp3").play().wait('first')
+,
+newVar("fantasy--name").global()
+,
+  newTextInput("fantasyNameInput", "")
+  .center()
+    .css({
+            "margin":"1em",  // Add a em margin around this element
+            'margin-top': '4.5vh',
+            "height":"1.5em",
+            'width': '10em',
+          //  "width": '500px',
+          "border": "8px solid yellow", 
+         //   "border":"#FFFCF1",
+            "border-radius": "4px",
+            "font-size": '55px',
+            "background-color": "#E0F7FA"
+        })
+  //   .once()
+    .print()
+,
+getTextInput("fantasyNameInput").center().print()
+,
+newButton("submit-fantasy-name-btn", 'COMEÇAR 🚀')
+    .center().print()
+    // Only validate a click on Start when inputID has been filled
+        .wait( getTextInput("fantasyNameInput").testNot.text("")
+        .success(newAudio('clickAudio', 'ship.mp3').play().wait('first'))
+        .failure( 
+            newAudio('nomeFailAud', 'nomeFail.mp3').play().wait('first')
+         ))
+,
+getVar("fantasy--name").set(getTextInput("fantasyNameInput"))
+,
+// Store the text from inputID into the Var element
+    getVar("ID").set( getTextInput("fantasyNameInput") )
+,   
+getText('my-name-msg').remove() // Remove 'qual é seu nome?'
+,
+getButton("submit-fantasy-name-btn", 'COMEÇAR 👉').remove() // Remove 'COMEÇAR' btn'
+,
+getTextInput("fantasyNameInput").remove() // Remove Text Input 
+,
+newVar("hi--text").set(getVar("fantasy--name")).set(v=>`Olá, ${v} !😄`) // create new var to show text.
+,
+newText("welcome--fantasy--name--msg").text( getVar("hi--text") ) // show text.
+  .cssContainer({
+    "font-size": "60px", 
+    'color':'white',
+    "background-image": "linear-gradient(to top left, #0099CC, #66CCFF)",
+    "border-radius": "25px"})
+,
+newAudio("sparkle", "sparkle.mp3").play().wait("first")  // add sparkle sound when click 
+,
+newTimer("waitName", 1000).start().wait()
+,
+getText('welcome--fantasy--name--msg').remove() // remove child's name text
+,
+newImage('foto1', 'foto1.png') // display Crystal's image 
+.css({
+                        "width": "40em", // Replace with the desired width of the image in em units
+                        "height": "40em", // Replace with the desired height of the image in em units 
+                        "border-radius": "50%",
+                        "border": "8px solid orange"
+                         })
+,
+newAudio('introAudio', 'intro.mp3').play().wait('first') // Cristal, uma astronauta corajosa....
+,
+newImage('aliensImage', 'aliens.png') // display left png
+.css({
+                        "width": "40em", // Replace with the desired width of the image in em units
+                        "height": "40em", // Replace with the desired height of the image in em units 
+                        "border-radius": "50%",
+                        "border": "8px solid orange"
+                         })
+,
+newAudio('aliensAudio', 'invitation2.mp3').play().wait('first') // Ela conheceu aliens....
+,
+getImage('aliensImage').remove()
+,
+getImage('foto1').print()
+,
+newAudio('explanation', 'numbers.mp3').play().wait('first') // O jogo funciona assim...
+,
+newImage('controlImage', 'control.png') // display left png
+.css({
+                        "width": "40em", // Replace with the desired width of the image in em units
+                        "height": "40em", // Replace with the desired height of the image in em units 
+                        "border-radius": "50%",
+                        "border": "8px solid orange"
+                         })
+,
+newAudio('controlAudio', 'control.mp3').play().wait('first') // Você vai digitar os numeros...
+,
+newAudio('ex1Audio', 'ex1.mp3').play().wait('first') // ex1
+,
+getImage('controlImage').remove() // remove controlImage
+,
+newImage('threeImage', 'three.png') // 
+.css({
+                        "width": "40em", // Replace with the desired width of the image in em units
+                        "height": "40em", // Replace with the desired height of the image in em units 
+                        "border-radius": "50%",
+                        "border": "8px solid orange"
+                         })
+,
+newAudio('clickAudio1', 'click.mp3').play().wait('first')
+,
+newTimer('waitControl', 1500).start().wait()
+,
+newImage('oneImage', 'one.png') // 
+.css({
+                        "width": "40em", // Replace with the desired width of the image in em units
+                        "height": "40em", // Replace with the desired height of the image in em units 
+                        "border-radius": "50%",
+                        "border": "8px solid orange"
+                         })
+,
+getAudio('clickAudio1').play().wait('first')
+,
+getTimer('waitControl').start().wait()
+,
+newImage('okImage', 'ok.png') // 
+.css({
+                        "width": "40em", // Replace with the desired width of the image in em units
+                        "height": "40em", // Replace with the desired height of the image in em units 
+                        "border-radius": "50%",
+                        "border": "8px solid orange"
+                         })
+,
+newAudio('okAudio', 'ok.mp3').play().wait('first') // click on ok
+,
+getAudio('clickAudio1').play().wait('first')
+,
+getTimer('waitControl').start().wait()
+,
+getImage('controlImage').print()
+,
+newAudio('ex2Audio', 'ex2.mp3').play().wait('first') // ex2
+,
+newImage('twoImage', 'two.png') // 
+.css({
+                        "width": "40em", // Replace with the desired width of the image in em units
+                        "height": "40em", // Replace with the desired height of the image in em units 
+                        "border-radius": "50%",
+                        "border": "8px solid orange"
+                         })
+,
+getAudio('clickAudio1', 'click.mp3').play().wait('first')
+,
+getTimer('waitControl').start().wait()
+,
+newImage('sixImage', 'six.png') // 
+.css({
+                        "width": "40em", // Replace with the desired width of the image in em units
+                        "height": "40em", // Replace with the desired height of the image in em units 
+                        "border-radius": "50%",
+                        "border": "8px solid orange"
+                         })
+,
+getAudio('clickAudio1').play().wait('first')
+,
+getTimer('waitControl').start().wait()
+,
+getImage('okImage').print() // print ok
+,
+newAudio('okShortAudio', 'okShort.mp3').play().wait('first') // click on ok
+,
+getAudio('clickAudio1').play().wait('first')
+,
+getTimer('waitControl').start().wait()
+,
+getImage("okImage").remove()
+,
+getImage('foto1').print()
+,
+newAudio('practiceAudio', "letsPractice.mp3").play().wait('first')
+,
+getImage('foto1').remove()
+,
+newImage('mousepadImage', 'mousepad.png') // 
+.css({
+                        "width": "40em", // Replace with the desired width of the image in em units
+                        "height": "40em", // Replace with the desired height of the image in em units 
+                        "border-radius": "50%",
+                        "border": "8px solid orange"
+                         })
+,
+newAudio('mousepadAudio', "mousepad.mp3").play().wait('first')
+
+);
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////// 👇 INSTRUCTIONS 2 👇 ///////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+newTrial('instructions--child--2',
+defaultImage
+  .css({
+  "display": "block",
+  "position": "fixed",
+  "top": "50vh", // 50% of the viewport height
+  "left": '50%', // Use 50% for horizontal centering and 15% and 85% left/right
+  "transform": "translate(-50%, -50%)",
+  "border-radius": "50%",
+  "width": "25em", // Replace with the desired width of the image in em units
+  "height": "25em", // Replace with the desired height of the image in em units
+  "z-index": "9999", // To make sure the image is on top of other elements
+}).print().center()
+,
+defaultText.center().print()
+.cssContainer({
+          'margin-top': '25vh', // Vertical centering
+          'margin-left': '50vh', // Horizontal centering
+          'transform': 'translate(-50%, -50%)', // Correct the centering
+        //  'margin-top': '3em',
+          'text-align': 'center',
+          "justify-content": 'center',
+          "align-items": 'center' ,
+          'font-size': '35px',
+          "font-family": "Comic Sans MS",
+          "white-space": "nowrap"})
+,
+defaultButton
+   .css({
+    "align-items": "center",
+    "background": "linear-gradient(to top left, #0099CC, #66CCFF)",
+//    "border": "0",
+    "border-radius": "8px",
+    "box-shadow": "rgba(151, 65, 252, 0.2) 0 15px 30px -5px",
+    "box-sizing": "border-box",
+    "color": "#FFFFFF",
+    "display": "flex",
+    "font-family": "Phantomsans, sans-serif",
+    "font-size": "30px",
+    "justify-content": "center",
+    "line-height": "1em",
+    "max-width": "100%",
+    "min-width": "140px",
+    "padding": "19px 24px",
+    "text-decoration": "none",
+    "user-select": "none",
+    "-webkit-user-select": "none",
+    "touch-action": "manipulation",
+    "white-space": "nowrap",
+    "cursor": "pointer",
+    'width': '20em',
+    "border": "8px solid #FCFFDC"
+  })
+,
+newAudio('winAudio', 'win.mp3').play()
+,
+newImage('foto2', 'foto1.png') // display Crystal's image 
+.css({
+                        "width": "40em", // Replace with the desired width of the image in em units
+                        "height": "40em", // Replace with the desired height of the image in em units 
+                        "border-radius": "50%",
+                        "border": "8px solid orange"
+                         })
+,
+newAudio('congratsAudio', 'congrats.mp3').play().wait('first') // Muito bem, você arrasou!
+,
+newAudio('instructionsBackAudio', 'instructionsBack.mp3').play().wait('first') // new instrocutions
+,
+getImage('foto2').remove()
+,
+newImage('controlImage2', 'control.png')
+.css({
+                        "width": "40em", // Replace with the desired width of the image in em units
+                        "height": "40em", // Replace with the desired height of the image in em units 
+                        "border-radius": "50%",
+                        "border": "8px solid orange"
+                         })
+,
+newAudio('ex3Audio', 'ex3.mp3').play().wait('first') // ex3
+,
+getImage('controlImage2').remove() // remove controlImage
+,
+newImage('threeImage2', 'three.png') // 
+.css({
+                        "width": "40em", // Replace with the desired width of the image in em units
+                        "height": "40em", // Replace with the desired height of the image in em units 
+                        "border-radius": "50%",
+                        "border": "8px solid orange"
+                         })
+,
+newAudio('clickAudio2', 'click.mp3').play().wait('first')
+,
+newTimer('waitControl2', 1500).start().wait()
+,
+newImage('fourImage', 'four.png') // 
+.css({
+                        "width": "40em", // Replace with the desired width of the image in em units
+                        "height": "40em", // Replace with the desired height of the image in em units 
+                        "border-radius": "50%",
+                        "border": "8px solid orange"
+                         })
+,
+getAudio('clickAudio2').play().wait('first')
+,
+getTimer('waitControl2').start().wait()
+,
+newImage('okImage2', 'ok.png') // 
+.css({
+                        "width": "40em", // Replace with the desired width of the image in em units
+                        "height": "40em", // Replace with the desired height of the image in em units 
+                        "border-radius": "50%",
+                        "border": "8px solid orange"
+                         })
+,
+newAudio('okAudio2', 'ok.mp3').play().wait('first') // click on ok
+,
+getAudio('clickAudio2').play().wait('first')
+,
+getTimer('waitControl2').start().wait()
+,
+getImage('controlImage2').print()
+,
+newAudio('ex4Audio', 'ex4.mp3').play().wait('first') // ex4
+,
+newImage('sixImage2', 'six.png') // 
+.css({
+                        "width": "40em", // Replace with the desired width of the image in em units
+                        "height": "40em", // Replace with the desired height of the image in em units 
+                        "border-radius": "50%",
+                        "border": "8px solid orange"
+                         })
+,
+getAudio('clickAudio2', 'click.mp3').play().wait('first')
+,
+getTimer('waitControl2').start().wait()
+,
+newImage('nineImage', 'nine.png') // 
+.css({
+                        "width": "40em", // Replace with the desired width of the image in em units
+                        "height": "40em", // Replace with the desired height of the image in em units 
+                        "border-radius": "50%",
+                        "border": "8px solid orange"
+                         })
+,
+getAudio('clickAudio2').play().wait('first')
+,
+getTimer('waitControl2').start().wait()
+,
+getImage('okImage2').print() // print ok
+,
+newAudio('okShortAudio2', 'okShort.mp3').play().wait('first') // click on ok
+,
+getAudio('clickAudio2').play().wait('first')
+,
+getTimer('waitControl2').start().wait()
+,
+getImage("okImage2").remove()
+,
+getImage('foto2').print()
+,
+newAudio('vamosLaAudio', "vamosLa.mp3").play().wait('first')
+,
+getImage('foto2').remove()
+,
+newImage('mousepadImage2', 'mousepad.png') // 
+.css({
+                        "width": "40em", // Replace with the desired width of the image in em units
+                        "height": "40em", // Replace with the desired height of the image in em units 
+                        "border-radius": "50%",
+                        "border": "8px solid orange"
+                         })
+,
+newAudio('mousepadAudio2', "mousepad.mp3").play().wait('first')
+);
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////// 👇 INSTRUCTIONS 3 👇 ///////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+newTrial('instructions--child--3',
+defaultImage
+  .css({
+  "display": "block",
+  "position": "fixed",
+  "top": "50vh", // 50% of the viewport height
+  "left": '50%', // Use 50% for horizontal centering and 15% and 85% left/right
+  "transform": "translate(-50%, -50%)",
+  "border-radius": "50%",
+  "width": "25em", // Replace with the desired width of the image in em units
+  "height": "25em", // Replace with the desired height of the image in em units
+  "z-index": "9999", // To make sure the image is on top of other elements
+}).print().center()
+,
+defaultText.center().print()
+.cssContainer({
+          'margin-top': '25vh', // Vertical centering
+          'margin-left': '50vh', // Horizontal centering
+          'transform': 'translate(-50%, -50%)', // Correct the centering
+        //  'margin-top': '3em',
+          'text-align': 'center',
+          "justify-content": 'center',
+          "align-items": 'center' ,
+          'font-size': '35px',
+          "font-family": "Comic Sans MS",
+          "white-space": "nowrap"})
+,
+defaultButton
+   .css({
+    "align-items": "center",
+    "background": "linear-gradient(to top left, #0099CC, #66CCFF)",
+//    "border": "0",
+    "border-radius": "8px",
+    "box-shadow": "rgba(151, 65, 252, 0.2) 0 15px 30px -5px",
+    "box-sizing": "border-box",
+    "color": "#FFFFFF",
+    "display": "flex",
+    "font-family": "Phantomsans, sans-serif",
+    "font-size": "30px",
+    "justify-content": "center",
+    "line-height": "1em",
+    "max-width": "100%",
+    "min-width": "140px",
+    "padding": "19px 24px",
+    "text-decoration": "none",
+    "user-select": "none",
+    "-webkit-user-select": "none",
+    "touch-action": "manipulation",
+    "white-space": "nowrap",
+    "cursor": "pointer",
+    'width': '20em',
+    "border": "8px solid #FCFFDC"
+  })
+,
+newAudio('ship2', 'ship.mp3').play()
+,
+newImage('foto3', 'foto1.png') // display Crystal's image 
+.css({
+                        "width": "40em", // Replace with the desired width of the image in em units
+                        "height": "40em", // Replace with the desired height of the image in em units 
+                        "border-radius": "50%",
+                        "border": "8px solid orange"
+                         })
+,
+newAudio('helpAudio', 'help.mp3').play().wait('first') // Muito obrigada....
+,
+newAudio('waitTeacherAudio', 'waitTeacher.mp3').play().wait('first') // espere o professor...
+);
+
+///////////////////////////////FINAL SCREEN /////////////////////////////////
+
+// 👉 Final screen
+
+newTrial ("final-screen-trial" ,
+exitFullscreen()
+,
+defaultImage
+  .css({
+  "display": "block",
+  "position": "fixed",
+  "top": "50vh", // 50% of the viewport height
+  "left": '50%', // Use 50% for horizontal centering and 15% and 85% left/right
+  "transform": "translate(-50%, -50%)",
+  "border-radius": "50%",
+  "width": "25em", // Replace with the desired width of the image in em units
+  "height": "25em", // Replace with the desired height of the image in em units
+  "z-index": "9999", // To make sure the image is on top of other elements
+}).print().center()
+,
+defaultText.center().print()
+.cssContainer({
+          'margin-top': '15vh', // Vertical centering
+          'margin-left': '85vh', // Horizontal centering
+          'transform': 'translate(-50%, -50%)', // Correct the centering
+        //  'margin-top': '3em',
+          'text-align': 'center',
+          "justify-content": 'center',
+          "align-items": 'center' ,
+          'font-size': '35px',
+          "font-family": "Comic Sans MS",
+          'color':'white',
+          "white-space": "nowrap"})
+,
+newText("final--msg", "<i style= 'color:red; background-color: yellow; border-radius: 5px;';>Espere</i> o professor agora ⏰!")
+     .center().print()
+    .cssContainer({
+          'font-size': '45px',
+          "white-space": "nowrap"  
+})
+,
+newImage('wait-ast', 'fogete3.JPG')
+      .css({
+                        "width": "15em", // Replace with the desired width of the image in em units
+                        "height": "15em", // Replace with the desired height of the image in em units 
+                        "border-radius": "50%",
+                        "border": "8px solid black",
+                        "left": '50%'
+                         }).center().print()
+, 
+newButton().wait() // // Stay on this page forever
+);
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////// 👇 COUNTDOWN 👇 ////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+newTrial("countdownTrial",
+newFunction(() => {$("body").css("background-image", "url(back_1.jpg)");}).call()
+,
+
+defaultText.center().print()
+    .cssContainer({
+      'position': 'fixed',  // Make the position fixed
+      'top': '50%',         // Vertical centering
+      'left': '50%',        // Horizontal centering
+      'transform': 'translate(-50%, -50%)', // Correct the centering
+      'text-align': 'center',
+      'justify-content': 'center',
+      'align-items': 'center',
+      'font-size': '150px',
+      "font-family": "Comic Sans MS",
+      "white-space": "nowrap",
+      "color": 'white',
+      "border-radius": "25%",
+     'text-shadow': '4px 4px lightblue'
+    })
+,
+getVar("errorCount").set(0) // always reset the errorCount before countdown
+,
+//newTimer('biggerTimer', 5000).start()
+newAudio('countdownAudio', 'cutCountdown.mp3').play()
+,
+    newVar("finishTime").set(v=>Date.now()+3000) // 5000ms = 5s
+    ,
+    newText("countDown", "3").print().center()
+   ,
+    // This Timer element will execute a callback after 1s
+    newTimer("updateCountdown",1000).callback( 
+        newVar("difference")
+            .set(getVar("finishTime")).set(v=>v-Date.now())
+            .test.is(v=>v>0) // Positive value means current time still below finish time
+            .success(
+                // Transform the Var element into an appropriately formatted string
+                getVar("difference")
+                    .set(v => Math.round(v / 1000)) // display time in s (ms/1000)
+                ,
+                getText("countDown").text(getVar("difference")) // update the text variable
+                ,
+                // Relaunch the timer to update again in 1s
+                getTimer("updateCountdown").start()
+            )
+    ).start() // Don't forget to start the timer the initially
+  ,
+   // getTimer('biggerTimer').wait()
+   getAudio('countdownAudio').wait()
+);
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////// countdown trial 2 ///////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//PARA VOLTAR PARA O PRACTICE 2 
+
+newTrial("countdownTrial2",
+newFunction(() => {$("body").css("background-image", "url(back_1.jpg)");}).call()
+,
+
+defaultText.center().print()
+    .cssContainer({
+      'position': 'fixed',  // Make the position fixed
+      'top': '50%',         // Vertical centering
+      'left': '50%',        // Horizontal centering
+      'transform': 'translate(-50%, -50%)', // Correct the centering
+      'text-align': 'center',
+      'justify-content': 'center',
+      'align-items': 'center',
+      'font-size': '150px',
+      "font-family": "Comic Sans MS",
+      "white-space": "nowrap",
+      "color": 'white',
+      "border-radius": "25%",
+     'text-shadow': '4px 4px lightblue'
+    })
+,
+getVar("errorCount").set(0) // always reset the errorCount before countdown
+,
+//newTimer('biggerTimer', 5000).start()
+newAudio('countdownAudio', 'cutCountdown.mp3').play()
+,
+    newVar("finishTime").set(v=>Date.now()+3000) // 5000ms = 5s
+    ,
+    newText("countDown", "3").print().center()
+   ,
+    // This Timer element will execute a callback after 1s
+    newTimer("updateCountdown",1000).callback( 
+        newVar("difference")
+            .set(getVar("finishTime")).set(v=>v-Date.now())
+            .test.is(v=>v>0) // Positive value means current time still below finish time
+            .success(
+                // Transform the Var element into an appropriately formatted string
+                getVar("difference")
+                    .set(v => Math.round(v / 1000)) // display time in s (ms/1000)
+                ,
+                getText("countDown").text(getVar("difference")) // update the text variable
+                ,
+                // Relaunch the timer to update again in 1s
+                getTimer("updateCountdown").start()
+            )
+    ).start() // Don't forget to start the timer the initially
+  ,
+   // getTimer('biggerTimer').wait()
+   getAudio('countdownAudio').wait()
+);
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////// 👇 PRACTICE TRIALS 👇 //////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/// Make a function ///
+
+makeTrial = label => row => newTrial( label+row.lenNumeric , 
+
+//Template("stimuliNewSTMPractice.csv", row =>
+//  newTrial("sequenceSTMp-"+row.lenNumeric,
+  defaultButton.css({
+  "align-items": "center",
+  "background-image": "linear-gradient(to top left, #2a225b, #453e88)",
+  color: "white", // "#23c0b9"
+  "border": "2px solid #23c0b9",
+  "border-radius": "8px",
+  "box-shadow": "0 8px 15px rgba(35, 192, 185, 0.5)",
+  "box-sizing": "border-box",
+  "font-family": "Phantomsans, sans-serif",
+  "font-size": "25px",
+  "justify-content": "center",
+  "line-height": "1em",
+  "max-width": "100%",
+  "min-width": "140px",
+  padding: "19px 24px",
+  "text-decoration": "none",
+  "user-select": "none",
+  "-webkit-user-select": "none",
+  "touch-action": "manipulation",
+  "white-space": "nowrap",
+  cursor: "pointer",
+  transition: "transform 0.2s ease-in-out"
+  })
+  ,
+  newVar("lastLen",0).global()    // We'll set this to lenNumeric at the end of the experiment
+  ,
+  newVar("errorCount",0).global() // We'll update this after the key press
+  ,
+  // Create new variable 'answer'
+  newVar("answer").set('')// set and reset to the empty string 
+  ,
+  newImage('separator', row.separatorImages).print()
+  .css({
+    "display": "block",
+    "position": "fixed",
+    "top": "50%",
+    "left": "50%",
+    "transform": "translate(-50%, -50%)",
+    "border-radius": "50%",
+    "width": "300px", // Replace with the desired width of the image
+    "height": "300px", // Replace with the desired height of the image
+    "z-index": "9999", // To make sure the image is on top of other elements
+  })
+  ,
+  newAudio("audio", row.seqAudio)
+            .play()
+    ,
+    getAudio("audio").wait("first") // wait audio finishes
+    ,
+    newAudio("beep", "beep.mp3")
+            .play()
+   ,
+  getImage('separator').remove()
+  ,
+  newText("display", '').print().center().cssContainer({
+  width: '340px',
+  height: '45px',
+  backgroundColor: '#000',
+  color: '#00FF00',
+  border: '2px solid #00FF00',
+  borderRadius: '5px',
+  fontFamily: 'Arial, sans-serif',
+  fontSize: '24px',
+  textAlign: 'right',
+//  padding: '5px',
+  boxShadow: '0 0 10px rgba(0, 255, 0, 0.5)',
+  textShadow: '1px 1px 2px #000',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  whiteSpace: 'nowrap'
+  })
+,
+// create audio for the buttons, but don't play it. 
+
+newAudio('clickAudio', 'click.mp3')
+,
+    // Create the buttons and set their onclick functions to update the "answer" variable
+    newButton("btn--1", "1")  // Button 1
+      .print()
+   .callback(
+        getVar("answer").set(v => v + '1'),
+        getText("display").text( getVar("answer").print()), // Update the display text
+        getAudio('clickAudio').play()
+      ),
+    newButton("btn--2", "2")  // Button 2
+      .print()
+      .callback(
+        getVar("answer").set(v => v + '2'),
+        getText("display").text( getVar("answer").print() ), // Update the display text
+        getAudio('clickAudio').play()
+      ),
+
+    newButton("btn--3", "3")  // Button 3
+      .print()
+      .callback(
+        getVar("answer").set(v => v + '3'),
+        getText("display").text( getVar("answer").print() ), // Update the display text
+        getAudio('clickAudio').play()
+      ),
+
+    newButton("btn--4", "4")  // Button 4
+      .print()
+      .callback(
+        getVar("answer").set(v => v + '4'),
+        getText("display").text( getVar("answer").print() ), // Update the display text
+        getAudio('clickAudio').play()
+      ),
+
+    newButton("btn--5", "5")  // Button 5
+      .print()
+      .callback(
+        getVar("answer").set(v => v + '5'),
+        getText("display").text( getVar("answer").print() ), // Update the display text
+        getAudio('clickAudio').play()
+      ),
+
+    newButton("btn--6", "6")  // Button 6
+      .print()
+      .callback(
+        getVar("answer").set(v => v + '6'),
+        getText("display").text( getVar("answer").print()), // Update the display text
+        getAudio('clickAudio').play()
+      ),
+
+    newButton("btn--7", "7")  // Button 7
+      .print()
+      .callback(
+        getVar("answer").set(v => v + '7'),
+        getText("display").text( getVar("answer").print() ), // Update the display text
+        getAudio('clickAudio').play()
+      ),
+
+    newButton("btn--8", "8")  // Button 8
+      .print()
+      .callback(
+        getVar("answer").set(v => v + '8'),
+        getText("display").text( getVar("answer").print() ), // Update the display text
+        getAudio('clickAudio').play()
+      ),
+
+    newButton("btn--9", "9")  // Button 9
+      .print()
+      .callback(
+        getVar("answer").set(v => v + '9'),
+        getText("display").text( getVar("answer").print() ), // Update the display text
+        getAudio('clickAudio').play()
+      )
+,
+newVar("RT").global().set( v => Date.now() ) // start RT as soon as canvas Appear 
+,
+newCanvas("my-canvas", 950, 625) // 950, 625
+.add(300, 105, getText("display"))
+  .add(250, 180, getButton("btn--1"))  
+  .add(400, 180, getButton("btn--2"))  
+  .add(550, 180, getButton("btn--3"))  
+  .add(250, 280, getButton("btn--4"))  
+  .add(400, 280, getButton("btn--5"))  
+  .add(550, 280, getButton("btn--6"))  
+  .add(250, 380, getButton("btn--7"))  
+  .add(400, 380, getButton("btn--8"))  
+  .add(550, 380, getButton("btn--9"))  
+  .add(400, 480, newButton("wait", "OK 👉")) 
+        .cssContainer({
+        "padding": "1,5em",
+       // "background-color": '#FFFCF1',
+        "border-radius": '25px',
+        "border": '2px solid #73AD21',
+        "background-color": "lightyellow",
+     //   "background-image": "url('controle5.jpg')", 
+        "background-size": "cover",
+      })
+      .center()
+      .print()
+,
+getButton("wait")
+  .wait()
+  .css({'text-align': 'center'})
+//  .callback(getVar("RT").set( v => Date.now() - v )) // 
+,
+getVar("RT").set( v => Date.now() - v )  // STOPS RT COUNT AS SOON AS "OK" KEY IS PRESSED
+//,
+//newText("printFirstKey", "")
+//    .text( getVar("answer") ).print().center()
+//,
+//newText("print1", "")
+//    .text(row.keysClean).print().center()
+//,
+//newTimer('test', 1000).start().wait()
+,
+getVar("answer").test.is(row.keysClean)
+ .success(
+      //  newText("right","Correto! ✅").center().print()
+)
+  .failure(
+      //      newText("Incorrect").center().print()
+      //      ,
+            // Increment the count error variable 
+            getVar('errorCount').set(v=> v+1)
+        )
+    ,
+    getVar("lastLen").set(row.lenNumeric)
+    ,
+    newAudio('bell', "bell.mp3").play()
+    ,
+    getVar("answer").log() // Log answer of the participants
+    ,
+    newTimer("wait-success",3000).start().wait()
+)
+  .log("sequence", row.sequence)
+  .log("seqLength",row.lenNumeric)
+  .log("seqAudio", row.seqAudio) 
+  .log("keysClean", row.keysClean)
+  .log( "reactionTime" , getVar("RT") );
+
+
+/////////////////////////////////////// MAKE PRACTICE TRIALS /////////////////////////////////////////////
+
+Template( "stimuliNewSTMPractice.csv", makeTrial("sequenceSTMp-") ); // Practice STM
+
+Template( "stimuliNewWMPractice.csv", makeTrial("sequenceWMp-") ); // Practice WM
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////// BEGIN TRIALS ////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+newTrial("begin--trial",
+
+getVar("errorCount").test.is(v => v >= 2).success( // test if errorCount is >= 2
+                     //   newText(" 2 errors !").center().print()  // PRINT ERROR ON SCREEN
+                     //   ,
+                        // getVar("errorCount").set(0) // reset the errorCount
+                        // ,
+                        getVar("countPracticeSTM").set(i=> i+1).log()
+                        ,
+                        newAudio('practiceAgainAud', 'practiceAgainAudio.mp3').play().wait('first')
+                        ,
+                        newFunction(() => {$("body").css("background-image", "none");}).call()
+                      //  ,
+                    //    exitFullscreen()
+                        ,
+                        jump("countdownTrial") // jump to instructions if errorCount >= 2 
+                    )
+                    .failure( 
+                        //newText(" NO 2 !").center().print(), // PRINT NO TWO ERRORS ON SCREEN
+                        //,
+                        getVar("countPracticeSTM").set(i=> i+1).log()
+                        , 
+                        newAudio('getReady', 'prepareSE.mp3').play().wait('first') // play audio and move on 
+                    
+            )
+);
+
+///////////////////////////// BEGIN TRIAL FOR WM /////////////////////////////////////////////////
+
+newTrial("begin--trial2",
+
+// newText("display-test").text( getVar("errorCount") ).print()
+
+getVar("errorCount").test.is(v => v >= 2).success( // test if errorCount is >= 2
+                     //   newText(" 2 errors !").center().print()  // PRINT ERROR ON SCREEN
+                     //   ,
+                        // getVar("errorCount").set(0) // reset the errorCount
+                        // ,
+                        getVar("countPracticeWM").set(i=> i+1).log()
+                        ,
+                        newAudio('practiceAgainAud', 'practiceAgainAudio.mp3').play().wait('first')
+                        ,
+                        newFunction(() => {$("body").css("background-image", "none");}).call()
+                      //  ,
+                    //    exitFullscreen()
+                        ,
+                        jump("countdownTrial2") // jump to instructions if errorCount >= 2
+                    )
+                    .failure( 
+                        //newText(" NO 2 !").center().print(), // PRINT NO TWO ERRORS ON SCREEN
+                        //,
+                        getVar("countPracticeWM").set(i=> i+1).log()
+                        , 
+                        newAudio('getReady', 'prepareSE.mp3').play().wait('first') // play audio and move on 
+                    
+            )
+);
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////  👇 STM 👇 /////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Template("stimuliNewSTM.csv", row =>
+  newTrial("sequenceSTM-"+row.lenNumeric,
+  defaultButton.css({
+  "align-items": "center",
+  "background-image": "linear-gradient(to top left, #2a225b, #453e88)",
+  color: "white", // "#23c0b9"
+  "border": "2px solid #23c0b9",
+  "border-radius": "8px",
+  "box-shadow": "0 8px 15px rgba(35, 192, 185, 0.5)",
+  "box-sizing": "border-box",
+  "font-family": "Phantomsans, sans-serif",
+  "font-size": "25px",
+  "justify-content": "center",
+  "line-height": "1em",
+  "max-width": "100%",
+  "min-width": "140px",
+  padding: "19px 24px",
+  "text-decoration": "none",
+  "user-select": "none",
+  "-webkit-user-select": "none",
+  "touch-action": "manipulation",
+  "white-space": "nowrap",
+  cursor: "pointer",
+  transition: "transform 0.2s ease-in-out"
+  })
+  ,
+  newVar("lastLen",0).global()    // We'll set this to lenNumeric at the end of the experiment
+  ,
+  newVar("errorCount",0).global() // We'll update this after the key press
+  ,
+  // Create new variable 'answer'
+  newVar("answer").set('')// set and reset to the empty string 
+  ,
+  newImage('separator', row.separatorImages).print()
+  .css({
+    "display": "block",
+    "position": "fixed",
+    "top": "50%",
+    "left": "50%",
+    "transform": "translate(-50%, -50%)",
+    "border-radius": "50%",
+    "width": "300px", // Replace with the desired width of the image
+    "height": "300px", // Replace with the desired height of the image
+    "z-index": "9999", // To make sure the image is on top of other elements
+  })
+  ,
+  newAudio("audio", row.seqAudio)
+            .play()
+    ,
+    getAudio("audio").wait("first") // wait audio finishes
+    ,
+    newAudio("beep", "beep.mp3")
+            .play()
+   ,
+  getImage('separator').remove()
+  ,
+  newText("display", '').print().center().cssContainer({
+  width: '340px',
+  height: '45px',
+  backgroundColor: '#000',
+  color: '#00FF00',
+  border: '2px solid #00FF00',
+  borderRadius: '5px',
+  fontFamily: 'Arial, sans-serif',
+  fontSize: '24px',
+  textAlign: 'right',
+//  padding: '5px',
+  boxShadow: '0 0 10px rgba(0, 255, 0, 0.5)',
+  textShadow: '1px 1px 2px #000',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  whiteSpace: 'nowrap'
+  })
+,
+// create audio for the buttons, but don't play it. 
+
+newAudio('clickAudio', 'click.mp3')
+,
+    // Create the buttons and set their onclick functions to update the "answer" variable
+    newButton("btn--1", "1")  // Button 1
+      .print()
+   .callback(
+        getVar("answer").set(v => v + '1'),
+        getText("display").text( getVar("answer").print()), // Update the display text
+        getAudio('clickAudio').play()
+      ),
+    newButton("btn--2", "2")  // Button 2
+      .print()
+      .callback(
+        getVar("answer").set(v => v + '2'),
+        getText("display").text( getVar("answer").print() ), // Update the display text
+        getAudio('clickAudio').play()
+      ),
+
+    newButton("btn--3", "3")  // Button 3
+      .print()
+      .callback(
+        getVar("answer").set(v => v + '3'),
+        getText("display").text( getVar("answer").print() ), // Update the display text
+        getAudio('clickAudio').play()
+      ),
+
+    newButton("btn--4", "4")  // Button 4
+      .print()
+      .callback(
+        getVar("answer").set(v => v + '4'),
+        getText("display").text( getVar("answer").print() ), // Update the display text
+        getAudio('clickAudio').play()
+      ),
+
+    newButton("btn--5", "5")  // Button 5
+      .print()
+      .callback(
+        getVar("answer").set(v => v + '5'),
+        getText("display").text( getVar("answer").print() ), // Update the display text
+        getAudio('clickAudio').play()
+      ),
+
+    newButton("btn--6", "6")  // Button 6
+      .print()
+      .callback(
+        getVar("answer").set(v => v + '6'),
+        getText("display").text( getVar("answer").print()), // Update the display text
+        getAudio('clickAudio').play()
+      ),
+
+    newButton("btn--7", "7")  // Button 7
+      .print()
+      .callback(
+        getVar("answer").set(v => v + '7'),
+        getText("display").text( getVar("answer").print() ), // Update the display text
+        getAudio('clickAudio').play()
+      ),
+
+    newButton("btn--8", "8")  // Button 8
+      .print()
+      .callback(
+        getVar("answer").set(v => v + '8'),
+        getText("display").text( getVar("answer").print() ), // Update the display text
+        getAudio('clickAudio').play()
+      ),
+
+    newButton("btn--9", "9")  // Button 9
+      .print()
+      .callback(
+        getVar("answer").set(v => v + '9'),
+        getText("display").text( getVar("answer").print() ), // Update the display text
+        getAudio('clickAudio').play()
+      )
+,
+newVar("RT").global().set( v => Date.now() ) // start RT as soon as canvas Appear 
+,
+newCanvas("my-canvas", 950, 625) // 950, 625
+.add(300, 105, getText("display"))
+  .add(250, 180, getButton("btn--1"))  
+  .add(400, 180, getButton("btn--2"))  
+  .add(550, 180, getButton("btn--3"))  
+  .add(250, 280, getButton("btn--4"))  
+  .add(400, 280, getButton("btn--5"))  
+  .add(550, 280, getButton("btn--6"))  
+  .add(250, 380, getButton("btn--7"))  
+  .add(400, 380, getButton("btn--8"))  
+  .add(550, 380, getButton("btn--9"))  
+  .add(400, 480, newButton("wait", "OK 👉")) 
+        .cssContainer({
+        "padding": "1,5em",
+       // "background-color": '#FFFCF1',
+        "border-radius": '25px',
+        "border": '2px solid #73AD21',
+        "background-color": "lightyellow",
+     //   "background-image": "url('controle5.jpg')", 
+        "background-size": "cover",
+      })
+      .center()
+      .print()
+,
+getButton("wait")
+  .wait()
+  .css({'text-align': 'center'})
+//  .callback(getVar("RT").set( v => Date.now() - v )) // 
+,
+getVar("RT").set( v => Date.now() - v )  // STOPS RT COUNT AS SOON AS "OK" KEY IS PRESSED
+//,
+//newText("printFirstKey", "")
+ //   .text( getVar("answer") ).print().center()
+//,
+//newText("print1", "")
+ //   .text(row.keysClean).print().center()
+//,
+//newTimer('test', 1000).start().wait()
+,
+getVar("answer").test.is(row.keysClean)
+ .success(
+     //   newText("right","Correto! ✅").center().print()
+    //    ,
+        getVar("errorCount").set(0) // Correct: reset the value to 0
+)
+  .failure(
+        //    newText("Incorrect").center().print()
+        //    ,
+            // Increment the value by 1, and check if it is equal to 2
+            getVar("errorCount").set(v=>v+1).test.is(2).success(
+                getVar("lastLen").test.is(row.lenNumeric)
+                    .success(
+                        newText("2 errors in a row for a sequence of the same length!").center().print()
+                        ,
+                        jump("instructions--child--2") // JUMP TO WM PRACTICE 
+                    )
+                    .failure( getVar("errorCount").set(1) /* set to 1 if previous length was different */ )
+            )
+        )
+    ,
+    getVar("lastLen").set(row.lenNumeric)
+    ,
+    newAudio('bell', "bell.mp3").play()
+    ,
+    getVar("answer").log() // Log answer of the participants
+    ,
+    newTimer("wait-success",3000).start().wait()
+    )
+  .log("sequence", row.sequence)
+  .log("seqLength",row.lenNumeric)
+  .log("seqAudio", row.seqAudio) 
+  .log("keysClean", row.keysClean)
+  .log( "reactionTime" , getVar("RT") )
+);
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////  👇 WM 👇 /////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Template("stimuliNew.csv", row =>
+  newTrial("sequenceWM-"+row.lenNumeric,
+  defaultButton.css({
+  "align-items": "center",
+  "background-image": "linear-gradient(to top left, #2a225b, #453e88)",
+  color: "white", // "#23c0b9"
+  "border": "2px solid #23c0b9",
+  "border-radius": "8px",
+  "box-shadow": "0 8px 15px rgba(35, 192, 185, 0.5)",
+  "box-sizing": "border-box",
+  "font-family": "Phantomsans, sans-serif",
+  "font-size": "25px",
+  "justify-content": "center",
+  "line-height": "1em",
+  "max-width": "100%",
+  "min-width": "140px",
+  padding: "19px 24px",
+  "text-decoration": "none",
+  "user-select": "none",
+  "-webkit-user-select": "none",
+  "touch-action": "manipulation",
+  "white-space": "nowrap",
+  cursor: "pointer",
+  transition: "transform 0.2s ease-in-out"
+  })
+  ,
+  newVar("lastLen",0).global()    // We'll set this to lenNumeric at the end of the experiment
+  ,
+  newVar("errorCount",0).global() // We'll update this after the key press
+  ,
+  // Create new variable 'answer'
+  newVar("answer").set('')// set and reset to the empty string 
+  ,
+  newImage('separator', row.separatorImages).print()
+  .css({
+    "display": "block",
+    "position": "fixed",
+    "top": "50%",
+    "left": "50%",
+    "transform": "translate(-50%, -50%)",
+    "border-radius": "50%",
+    "width": "300px", // Replace with the desired width of the image
+    "height": "300px", // Replace with the desired height of the image
+    "z-index": "9999", // To make sure the image is on top of other elements
+  })
+  ,
+  newAudio("audio", row.seqAudio)
+            .play()
+    ,
+    getAudio("audio").wait("first") // wait audio finishes
+    ,
+    newAudio("beep", "beep.mp3")
+            .play()
+   ,
+  getImage('separator').remove()
+  ,
+  newText("display", '').print().center().cssContainer({
+  width: '340px',
+  height: '45px',
+  backgroundColor: '#000',
+  color: '#00FF00',
+  border: '2px solid #00FF00',
+  borderRadius: '5px',
+  fontFamily: 'Arial, sans-serif',
+  fontSize: '24px',
+  textAlign: 'right',
+//  padding: '5px',
+  boxShadow: '0 0 10px rgba(0, 255, 0, 0.5)',
+  textShadow: '1px 1px 2px #000',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  whiteSpace: 'nowrap'
+  })
+,
+// create audio for the buttons, but don't play it. 
+
+newAudio('clickAudio', 'click.mp3')
+,
+    // Create the buttons and set their onclick functions to update the "answer" variable
+    newButton("btn--1", "1")  // Button 1
+      .print()
+   .callback(
+        getVar("answer").set(v => v + '1'),
+        getText("display").text( getVar("answer").print()), // Update the display text
+        getAudio('clickAudio').play()
+      ),
+    newButton("btn--2", "2")  // Button 2
+      .print()
+      .callback(
+        getVar("answer").set(v => v + '2'),
+        getText("display").text( getVar("answer").print() ), // Update the display text
+        getAudio('clickAudio').play()
+      ),
+
+    newButton("btn--3", "3")  // Button 3
+      .print()
+      .callback(
+        getVar("answer").set(v => v + '3'),
+        getText("display").text( getVar("answer").print() ), // Update the display text
+        getAudio('clickAudio').play()
+      ),
+
+    newButton("btn--4", "4")  // Button 4
+      .print()
+      .callback(
+        getVar("answer").set(v => v + '4'),
+        getText("display").text( getVar("answer").print() ), // Update the display text
+        getAudio('clickAudio').play()
+      ),
+
+    newButton("btn--5", "5")  // Button 5
+      .print()
+      .callback(
+        getVar("answer").set(v => v + '5'),
+        getText("display").text( getVar("answer").print() ), // Update the display text
+        getAudio('clickAudio').play()
+      ),
+
+    newButton("btn--6", "6")  // Button 6
+      .print()
+      .callback(
+        getVar("answer").set(v => v + '6'),
+        getText("display").text( getVar("answer").print()), // Update the display text
+        getAudio('clickAudio').play()
+      ),
+
+    newButton("btn--7", "7")  // Button 7
+      .print()
+      .callback(
+        getVar("answer").set(v => v + '7'),
+        getText("display").text( getVar("answer").print() ), // Update the display text
+        getAudio('clickAudio').play()
+      ),
+
+    newButton("btn--8", "8")  // Button 8
+      .print()
+      .callback(
+        getVar("answer").set(v => v + '8'),
+        getText("display").text( getVar("answer").print() ), // Update the display text
+        getAudio('clickAudio').play()
+      ),
+
+    newButton("btn--9", "9")  // Button 9
+      .print()
+      .callback(
+        getVar("answer").set(v => v + '9'),
+        getText("display").text( getVar("answer").print() ), // Update the display text
+        getAudio('clickAudio').play()
+      )
+,
+newVar("RT").global().set( v => Date.now() ) // start RT as soon as canvas Appear 
+,
+newCanvas("my-canvas", 950, 625) // 950, 625
+.add(300, 105, getText("display"))
+  .add(250, 180, getButton("btn--1"))  
+  .add(400, 180, getButton("btn--2"))  
+  .add(550, 180, getButton("btn--3"))  
+  .add(250, 280, getButton("btn--4"))  
+  .add(400, 280, getButton("btn--5"))  
+  .add(550, 280, getButton("btn--6"))  
+  .add(250, 380, getButton("btn--7"))  
+  .add(400, 380, getButton("btn--8"))  
+  .add(550, 380, getButton("btn--9"))  
+  .add(400, 480, newButton("wait", "OK 👉")) 
+        .cssContainer({
+        "padding": "1,5em",
+       // "background-color": '#FFFCF1',
+        "border-radius": '25px',
+        "border": '2px solid #73AD21',
+        "background-color": "lightyellow",
+     //   "background-image": "url('controle5.jpg')", 
+        "background-size": "cover",
+      })
+      .center()
+      .print()
+,
+getButton("wait")
+  .wait()
+  .css({'text-align': 'center'})
+//  .callback(getVar("RT").set( v => Date.now() - v )) // 
+,
+getVar("RT").set( v => Date.now() - v )  // STOPS RT COUNT AS SOON AS "OK" KEY IS PRESSED
+//,
+//newText("printFirstKey", "")
+//    .text( getVar("answer") ).print().center()
+//,
+//newText("print1", "")
+//    .text(row.keysClean).print().center()
+,
+newTimer('test', 1000).start().wait()
+,
+getVar("answer").test.is(row.keysClean)
+ .success(
+      //  newText("right","Correto! ✅").center().print()
+     //   ,
+        getVar("errorCount").set(0) // Correct: reset the value to 0
+)
+  .failure(
+        //    newText("Incorrect").center().print()
+         //   ,
+            // Increment the value by 1, and check if it is equal to 2
+            getVar("errorCount").set(v=>v+1).test.is(2).success(
+                getVar("lastLen").test.is(row.lenNumeric)
+                    .success(
+                        newText("2 errors in a row for a sequence of the same length!").center().print()
+                        ,
+                        jump("instructions--child--3") // The next trial will be the one labeled "end"
+                    )
+                    .failure( getVar("errorCount").set(1) /* set to 1 if previous length was different */ )
+            )
+        )
+    ,
+    getVar("lastLen").set(row.lenNumeric)
+    ,
+    newAudio('bell', "bell.mp3").play()
+    ,
+    getVar("answer").log() // Log answer of the participants
+    ,
+    newTimer("wait-success",3000).start().wait()
+    )
+  .log("sequence", row.sequence)
+  .log("seqLength",row.lenNumeric)
+  .log("seqAudio", row.seqAudio) 
+  .log("keysClean", row.keysClean)
+  .log( "reactionTime" , getVar("RT") )
+);
+
+// 👉 Send results:
+
+SendResults("sendResults");
+
+// 👉 de bug off///
+
+PennController.DebugOff();  
+ 
+
+
+
+
+
